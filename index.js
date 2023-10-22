@@ -10,7 +10,7 @@ app.enable("case sensitive routing");
 app.use(express.json());
 app.locals.title = "My App";
 app.get("/", (req, res) => {
-  res.send("this is home page");
+  res.send("this is home page", a);
 });
 
 app.post("/", (req, res) => {
@@ -49,6 +49,21 @@ const logger = (req, res, next) => {
   res.end();
 };
 app.use(logger);
+
+// ****** eror ********
+
+app.use((req, res, next) => {
+  next("Requested url was not Found !");
+});
+
+app.use((err, req, res, next) => {
+  if (err.message) {
+    res.status(500).res.send(err.massage);
+  } else {
+    res.status(500).send("there is an error");
+  }
+});
+
 app.listen(3000, () => {
   console.log("listening on port 3000");
 });
