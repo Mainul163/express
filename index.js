@@ -1,5 +1,6 @@
 const express = require("express");
 const handle = require("./handle");
+const routerApp = require("./router");
 const app = express();
 const admin = express();
 
@@ -25,12 +26,29 @@ app.get("/app", handle);
 
 admin.get("/dashboard", (req, res) => {
   console.log(admin.mountpath); // /admin
+
+  console.log(
+    `${new Date(Date.now()).toLocaleString()}-${req.method}-${
+      req.originalUrl
+    }-${req.protocol}-${req.ip}`
+  );
   res.send("Admin Homepage");
 });
 app.use("/admin", admin);
-
+app.use("/router", routerApp);
 //***** sub app or mounthpath end *******/
 
+// ********* middleware ****************
+
+const logger = (req, res, next) => {
+  console.log(
+    `${new Date(Date.now()).toLocaleString()}-${req.method}-${
+      req.originalUrl
+    }-${req.protocol}-${req.ip}`
+  );
+  res.end();
+};
+app.use(logger);
 app.listen(3000, () => {
   console.log("listening on port 3000");
 });
